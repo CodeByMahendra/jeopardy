@@ -28,9 +28,9 @@ export async function POST(req) {
     const userEmailData = {
       sender: { email: "mahendrathakur0040@gmail.com", name: "Support Team" },
       to: [{ email: email }], 
-      subject: "Thank You for Contacting Us!",
+      subject: "Thank You for Contacting Us",
       htmlContent: `<h3>Hi ${name},</h3>
-        <p>Thank you for reaching out to us. We have received your message and will get back to you soon.</p>
+        <p>Thank you for reaching out to us. We have received your message and will get back to you soon. Banna </p>
         <p><b>Your Message:</b> ${message}</p>
         <p>Best Regards,<br/>Support Team</p>`,
     };

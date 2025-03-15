@@ -1,17 +1,11 @@
+
+
 "use client";
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-
-import { toast } from 'react-toastify';
-
-
 import { useState, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from 'react-toastify';
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -25,7 +19,9 @@ export default function ContactUs() {
   const [captchaCode, setCaptchaCode] = useState("");
 
   useEffect(() => {
-    setCaptchaCode(generateCaptcha());
+    if (typeof window !== "undefined") {
+      setCaptchaCode(generateCaptcha());
+    }
   }, []);
 
   function generateCaptcha() {
@@ -42,19 +38,12 @@ export default function ContactUs() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          message: values.message,
-        }),
+        body: JSON.stringify(values),
       });
-
-      const data = await response.json();
-      console.log("data=", data);
 
       if (response.ok) {
         toast.success("Message sent successfully!");
-        setCaptchaCode(generateCaptcha());
+        setCaptchaCode(generateCaptcha()); 
         form.reset();
       } else {
         toast.error("Failed to send message.");
@@ -76,77 +65,39 @@ export default function ContactUs() {
   });
 
   return (
-    <div className="min-h-screen  flex flex-col items-center bg-gradient-to-br from-blue-300 to-purple-600 p-6">
-      <Card className="w-full max-w-md mx-auto ">
-      <CardHeader>
-        <CardTitle>Contact Us</CardTitle>
-        <CardDescription>We would love to hear from you!</CardDescription>
-      </CardHeader>
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-300 to-purple-600 p-6">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-bold text-center">Contact Us</h2>
+        <p className="text-center text-gray-600">We would love to hear from you!</p>
 
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your Name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="you@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Message</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Type your message here..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="captcha"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Enter CAPTCHA: {captchaCode}</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter CAPTCHA code" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button className="w-full" type="submit">Submit</Button>
-          </form>
-        </Form>
-      </CardContent>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="block font-medium">Name</label>
+            <input {...form.register("name")} className="w-full border p-2 rounded" placeholder="Your Name" />
+            <p className="text-red-500">{form.formState.errors.name?.message}</p>
+          </div>
 
-      <CardFooter className="flex justify-center">
-        <p className="text-sm text-muted-foreground">We will get back to you soon!</p>
-      </CardFooter>
-    </Card>
+          <div>
+            <label className="block font-medium">Email</label>
+            <input {...form.register("email")} className="w-full border p-2 rounded" placeholder="you@example.com" />
+            <p className="text-red-500">{form.formState.errors.email?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Message</label>
+            <textarea {...form.register("message")} className="w-full border p-2 rounded" placeholder="Type your message here..."></textarea>
+            <p className="text-red-500">{form.formState.errors.message?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Enter CAPTCHA: {captchaCode}</label>
+            <input {...form.register("captcha")} className="w-full border p-2 rounded" placeholder="Enter CAPTCHA" />
+            <p className="text-red-500">{form.formState.errors.captcha?.message}</p>
+          </div>
+
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Submit</button>
+        </form>
+      </div>
     </div>
   );
 }

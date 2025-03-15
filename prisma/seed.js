@@ -1,25 +1,21 @@
+
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 const questions = [
-  // 🔹 Basic GK Questions
   {
     question: "What is the capital of India?",
     options: ["Mumbai", "New Delhi", "Bangalore", "Kolkata"],
     answer: "New Delhi",
     points: 100,
   },
-
   {
     question: "How many continents are there on Earth?",
     options: ["5", "6", "7", "8"],
     answer: "7",
     points: 100,
   },
-
-
-  // 🔹 Medium GK Questions
   {
     question: "Which river is known as the 'Ganga of the South'?",
     options: ["Krishna", "Godavari", "Kaveri", "Yamuna"],
@@ -44,8 +40,6 @@ const questions = [
     answer: "Nile",
     points: 300,
   },
-
-  // 🔹 Advanced GK Questions
   {
     question: "Who discovered the sea route to India?",
     options: ["Christopher Columbus", "Ferdinand Magellan", "Vasco da Gama", "Marco Polo"],
@@ -58,7 +52,6 @@ const questions = [
     answer: "Vatican City",
     points: 500,
   },
-
   {
     question: "Which is the national animal of India?",
     options: ["Lion", "Tiger", "Elephant", "Leopard"],
