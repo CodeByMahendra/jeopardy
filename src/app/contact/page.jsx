@@ -2,57 +2,21 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { toast } from 'react-toastify';
+import { useState } from "react";
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ReCAPTCHA from "react-google-recaptcha";
 import * as z from "zod";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Invalid email"),
   message: z.string().min(10, "Message must be at least 10 characters"),
-  captcha: z.string(),
 });
 
 export default function ContactUs() {
-  const [captchaCode, setCaptchaCode] = useState("");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCaptchaCode(generateCaptcha());
-    }
-  }, []);
-
-  function generateCaptcha() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
-  }
-
-  async function onSubmit(values) {
-    if (values.captcha !== captchaCode) {
-      toast.error("Invalid CAPTCHA. Please try again.");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (response.ok) {
-        toast.success("Message sent successfully!");
-        setCaptchaCode(generateCaptcha()); 
-        form.reset();
-      } else {
-        toast.error("Failed to send message.");
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-      toast.error("An error occurred while sending the message.");
-    }
-  }
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -60,9 +24,57 @@ export default function ContactUs() {
       name: "",
       email: "",
       message: "",
-      captcha: "",
     },
   });
+
+  async function onSubmit(values) {
+    if (!captchaValue) {
+      toast.error("Please complete the reCAPTCHA verification.");
+      return;
+    }
+
+    try {
+      // Verify reCAPTCHA
+      const captchaResponse = await fetch("/api/verify-recaptcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: captchaValue }),
+      });
+
+      const captchaData = await captchaResponse.json();
+      if (!captchaResponse.ok || !captchaData.success) {
+        toast.error("reCAPTCHA verification failed. Please try again.");
+        return;
+      }
+
+      // Send Contact Form Data
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...values, recaptchaToken: captchaValue }),
+      });
+
+      let result;
+      try {
+        result = await response.json();
+      } catch (err) {
+        console.error("Invalid JSON response", err);
+        toast.error("Server error: Invalid response format.");
+        return;
+      }
+
+      if (response.ok) {
+        toast.success("Message sent successfully!");
+        form.reset();
+        setCaptchaValue(null);
+      } else {
+        toast.error(result?.message || "Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("An error occurred while sending the message.");
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-300 to-purple-600 p-6">
@@ -90,9 +102,10 @@ export default function ContactUs() {
           </div>
 
           <div>
-            <label className="block font-medium">Enter CAPTCHA: {captchaCode}</label>
-            <input {...form.register("captcha")} className="w-full border p-2 rounded" placeholder="Enter CAPTCHA" />
-            <p className="text-red-500">{form.formState.errors.captcha?.message}</p>
+            <ReCAPTCHA
+              sitekey="6LcU3PYqAAAAANbIvuohAW1zGIiUKrgsuD31rHcM" 
+              onChange={(token) => setCaptchaValue(token)}
+            />
           </div>
 
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Submit</button>

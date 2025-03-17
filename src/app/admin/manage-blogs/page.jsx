@@ -14,7 +14,7 @@ export default function AdminDashboard() {
         const fetchBlogs = async () => {
             try {
                 setLoading(true);
-                const res = await axios.get("/api/admin");
+                const res = await axios.get("/api/admin/crud-blogs");
                 if (Array.isArray(res.data)) {
                     setBlogs(res.data);
                 } else {
@@ -36,7 +36,7 @@ export default function AdminDashboard() {
 
         try {
             setLoading(true);
-            await axios.delete("/api/admin", { data: { id } });
+            await axios.delete("/api/admin/crud-blogs", { data: { id } });
             setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
         } catch (err) {
             console.error("Error deleting blog:", err);
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
         e.preventDefault();
         try {
             setLoading(true);
-            await axios.put("/api/admin", editBlog);
+            await axios.put("/api/admin/crud-blogs", editBlog);
             setBlogs((prevBlogs) => prevBlogs.map((b) => (b.id === editBlog.id ? editBlog : b)));
             setEditBlog(null);
         } catch (err) {

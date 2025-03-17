@@ -48,15 +48,15 @@ export async function PUT(req) {
     const body = await req.json();
     console.log("Received Data=", body);
 
-    const { id,category, title,  image, article } = body;
+    const { id,categoryId, title,  image, content } = body;
 
-    if (!id || !category || !title || !image || !article  === undefined) {
+    if (!id || !categoryId || !title || !image || !content  === undefined) {
       return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
 
     const updatedBlogs = await prisma.blog.update({
       where: { id },
-      data: {category, title, image, article },
+      data: {categoryId, title, image, content },
     });
 
     console.log("Updated Blogs:", updatedBlogs);

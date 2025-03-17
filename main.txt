@@ -1,4 +1,69 @@
 
+// "use client"; 
+
+// import { useRouter } from "next/navigation";
+// import { useState } from "react";
+// import axios from "axios";
+
+// export default function Login() {
+//     const router = useRouter();
+//     const [values, setValues] = useState({ email: "", password: "", secretCode: "" });
+//     const [error, setError] = useState(null);
+//     const [loading, setLoading] = useState(false);
+
+//     const handleSubmit = async (e) => {
+//         e.preventDefault();
+//         setError(null);
+//         setLoading(true);
+
+//         try {
+//             console.log("Sending Login Request:", values);
+//             const response = await axios.post("/api/auth/login", values, { withCredentials: true });
+
+//             console.log("Login Response:", response.data);
+
+//             if (response.status === 200) {
+//             // const tokennn=    Cookies.set("token", response.data.token, { expires: 1 });
+//             // console.log("Tokkk=",tokennn)
+
+//                 localStorage.setItem("user", JSON.stringify(response.data.user));
+
+//                 if (response.data.user.role === "ADMIN") {
+//                     console.log("Redirecting to /admin/create-blog");
+//                     router.push("/admin"); // ✅ Redirect
+//                 } else {
+//                     console.log("Redirecting to /users/game");
+//                     router.push("/users/game"); // ✅ Redirect
+//                 }
+//             }
+//         } catch (err) {
+//             console.error("Login Error:", err.response?.data?.error || err.message);
+//             setError(err.response?.data?.error || "Something went wrong!");
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     return (
+//         <div className="flex flex-col items-center justify-center min-h-screen">
+//             <h1 className="text-2xl font-bold mb-4">Login</h1>
+//             {error && <p className="text-red-500">{error}</p>}
+//             <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-80">
+//                 <input type="email" name="email" placeholder="Email" value={values.email} onChange={(e) => setValues({ ...values, email: e.target.value })} required className="p-2 border border-gray-300 rounded" />
+//                 <input type="password" name="password" placeholder="Password" value={values.password} onChange={(e) => setValues({ ...values, password: e.target.value })} required className="p-2 border border-gray-300 rounded" />
+//                 <input type="text" name="secretCode" placeholder="Admin Secret Code (Only for Admins)" value={values.secretCode} onChange={(e) => setValues({ ...values, secretCode: e.target.value })} className="p-2 border border-gray-300 rounded" />
+//                 <button type="submit" className="p-2 bg-blue-600 text-white rounded" disabled={loading}>
+//                     {loading ? "Logging in..." : "Login"}
+//                 </button>
+//             </form>
+//         </div>
+//     );
+// }
+
+
+
+
+
 "use client";
 import axios from "axios";
 import { useEffect } from "react";
@@ -10,7 +75,7 @@ import { Button } from "@/components/ui/button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
-import { signInFormSchema } from "@/lib/auth-schema";
+import { formSchema } from "@/lib/auth-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -20,7 +85,7 @@ export default function Register() {
  
 
   const form = useForm({
-    resolver: zodResolver(signInFormSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -39,7 +104,7 @@ async function onSubmit(values) {
     const response = await axios.post("/api/auth/login", values, { withCredentials: true });
 
     console.log("Login Response:", response.data);
-    if (response.status === 200) {
+    if (response.status === 201) {
       toast.success("Login successful!");
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
@@ -101,14 +166,6 @@ async function onSubmit(values) {
               Submit
             </Button>
           </form>
-          <CardFooter className="flex justify-center">
-        <p className="text-sm text-muted-foreground">
-          forgot password?{" "}
-          <Link href="/forgot-password" className="text-primary hover:underline">
-            Click here
-          </Link>
-        </p>
-      </CardFooter>
         </Form>
 
     

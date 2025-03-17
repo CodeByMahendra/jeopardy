@@ -17,7 +17,7 @@ export default function Admin() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get("/api/categories");
+        const { data } = await axios.get("/api/admin/categories");
         setCategories(data);
       } catch (error) {
         setError("Failed to fetch categories");

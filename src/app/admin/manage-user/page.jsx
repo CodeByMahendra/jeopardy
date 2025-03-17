@@ -29,11 +29,13 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
+
+
   const handleDeleteUser = async (userId) => {
     try {
-      const response = await axios.delete("/api/admin/delete", {
-        data: { id: userId }, // Axios requires data inside `data` for DELETE requests
+      const response = await axios.delete("/api/admin/manage-user", {
         headers: { "Content-Type": "application/json" },
+        data: { id: userId },  // ✅ Ensure "data" is explicitly in a separate object
       });
   
       if (response.status === 200) {
@@ -45,7 +47,6 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error deleting user:", error);
       
-      // Handle different error responses
       if (error.response) {
         toast.error(error.response.data.error || "Failed to delete user!");
       } else {
@@ -53,8 +54,8 @@ const Dashboard = () => {
       }
     }
   };
-  
 
+  
   return (
     <div className=" flex ">
       <AdminSidebar />
@@ -77,7 +78,7 @@ const Dashboard = () => {
           </h2>
           <p className="text-gray-600">Score: {user.score}</p>
           <button
-  onClick={() => handleDeleteUser(user.id)}
+  onClick={() => handleDeleteUser(user.id.toString())}
   className="mt-3 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
 >
   Delete

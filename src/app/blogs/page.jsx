@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get("/api/categories");
+        const { data } = await axios.get("/api/admin/categories");
         console.log(data.data)
         setCategories(data);
       } catch (error) {

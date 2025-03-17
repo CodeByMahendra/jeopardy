@@ -11,7 +11,7 @@ export default function BlogPage({ params }) {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const category = params.category?.[0] || 'general'; // Default category
+        const category = params.category?.[0] || 'general'; 
         const response = await axios.get(`/api/blog/${category}`);
         setBlogs(response.data);
       } catch (err) {

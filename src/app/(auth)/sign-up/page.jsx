@@ -1,11 +1,5 @@
-
-
-
-
 "use client";
 import axios from "axios";
-
-
 import { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -18,17 +12,11 @@ import { useRouter } from "next/navigation";
 import { formSchema } from "@/lib/auth-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react"; // 
 
 export default function Register() {
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      router.push("/game");
-    }
-  }, [router]);
+ 
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -37,42 +25,39 @@ export default function Register() {
       email: "",
       password: "",
       role: "USER",
-      secretCode: "",
+      // secretCode: "",
     },
   });
 
  
 
 
+
 async function onSubmit(values) {
-  console.log("Form Values:", values);
+  console.log("Form Values Sent:", values);
 
   try {
-    const response = await axios.post("/api/auth/signup", values);
+    axios.defaults.withCredentials = true;
+    const response = await axios.post("/api/auth/signup", values, { withCredentials: true });
 
     console.log("Signup Response:", response.data);
+    if (response.status === 201) {
+      toast.success("Signup successful!");
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
-    toast.success("Signup successful!");
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-
-    router.push(values.role === "ADMIN" ? "/admin" : "/game");
+      if (response.data.user.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/users/game");
+      }
+    }
   } catch (error) {
-    console.error("Signup error:", error);
-    toast.error(error.response?.data?.message || "Signup failed.");
+    console.error("Signup error:", error.response?.data || error.message);
+    toast.error(error.response?.data?.error || "Signup failed.");
   }
 }
-
  
-  async function handleGoogleSignIn() {
-    const result = await signIn("google", { callbackUrl: "/dashboard" }); 
-
-    if (result?.error) {
-      toast.error("Google Sign-In Failed!");
-    } else {
-      toast.success("Google Sign-In Successful!");
-    }
-  }
+  
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -123,6 +108,9 @@ async function onSubmit(values) {
                 </FormItem>
               )}
             />
+{/* 
+
+
             <FormField
               control={form.control}
               name="role"
@@ -154,18 +142,17 @@ async function onSubmit(values) {
                 )}
               />
             )}
+ */}
+
+
+
             <Button className="w-full" type="submit">
               Submit
             </Button>
           </form>
         </Form>
 
-        <div className="mt-4 text-center">
-          <p className="text-sm text-muted-foreground">Or sign up with</p>
-          <Button className="mt-2 w-full bg-red-500 hover:bg-red-600" onClick={handleGoogleSignIn}>
-            Sign Up with Google
-          </Button>
-        </div>
+    
       </CardContent>
 
       <CardFooter className="flex justify-center">

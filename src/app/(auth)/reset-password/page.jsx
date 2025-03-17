@@ -19,7 +19,7 @@ export default function ResetPassword() {
     try {
       await axios.post("/api/auth/reset-password", { password, token });
       toast.success("Password reset successful!");
-      router.push("/auth/login");
+      router.push("/sign-in");
     } catch (error) {
       toast.error(error.response?.data?.error || "Error resetting password!");
     }
