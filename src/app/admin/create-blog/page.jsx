@@ -7,7 +7,6 @@ import axios from "axios";
 import AdminSidebar from "@/components/AdminSidebar";
 import { createClient } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,

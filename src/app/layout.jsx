@@ -6,7 +6,7 @@
 import React from "react";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.min.css";
 import Navbar from "@/components/navbar";
 import UserProvider from "@/context/UserContext"; 
 

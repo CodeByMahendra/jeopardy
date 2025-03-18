@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);

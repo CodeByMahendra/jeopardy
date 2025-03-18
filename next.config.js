@@ -26,5 +26,5 @@ const nextConfig = {
   },
 };
 
-export default nextConfig; // ✅ ESM export
+export default nextConfig; 
 
