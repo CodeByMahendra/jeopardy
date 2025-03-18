@@ -35,7 +35,7 @@ const Dashboard = () => {
     try {
       const response = await axios.delete("/api/admin/manage-user", {
         headers: { "Content-Type": "application/json" },
-        data: { id: userId },  // ✅ Ensure "data" is explicitly in a separate object
+        data: { id: userId },  
       });
   
       if (response.status === 200) {

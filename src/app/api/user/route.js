@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 
 const prisma = new PrismaClient();
-const SECRET_KEY = "moijhfdftyujbvy"; // 🔴 Use env variable in production
+const SECRET_KEY = "moijhfdftyujbvy"
 
 export async function GET(req) {
     try {

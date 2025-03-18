@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 import { signInFormSchema } from "@/lib/auth-schema";
 
 const prisma = new PrismaClient();
-const SECRET_KEY = process.env.JWT_SECRET || "moijhfdftyujbvy";
+const SECRET_KEY = process.env.SECRET_KEY || "moijhfdftyujbvy";
 
 export async function POST(req) {
     try {

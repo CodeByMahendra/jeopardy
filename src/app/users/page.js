@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
 
-const SECRET_KEY = "moijhfdftyujbvy";
+const SECRET_KEY = process.env.SECRET_KEY || "moijhfdftyujbvy";
 
 export default function UserDashboard() {
     const token = cookies().get("token")?.value;

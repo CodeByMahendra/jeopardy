@@ -103,7 +103,7 @@ export default function ContactUs() {
 
           <div>
             <ReCAPTCHA
-              sitekey="6LcU3PYqAAAAANbIvuohAW1zGIiUKrgsuD31rHcM" 
+              sitekey="6LcU3PYqAAAAANbIvuohAW1zGIiUKrgsuD31rHcM"
               onChange={(token) => setCaptchaValue(token)}
             />
           </div>

@@ -8,7 +8,8 @@ import { prisma } from "@/lib/prisma";
 import jwt from "jsonwebtoken";
 
 import { formSchema } from "@/lib/auth-schema";
-const SECRET_KEY = "moijhfdftyujbvy"; 
+const SECRET_KEY = process.env.SECRET_KEY || "moijhfdftyujbvy";
+
 
 export async function POST(req) {
     try {

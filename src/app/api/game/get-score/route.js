@@ -4,7 +4,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";  
 
-// ✅ Get User Score
+//  Get User Score
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);

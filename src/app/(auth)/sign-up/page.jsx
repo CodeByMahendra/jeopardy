@@ -1,6 +1,8 @@
 "use client";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect,useContext } from "react";
+import { UserContext } from "@/context/UserContext"; 
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -15,6 +17,8 @@ import { useForm } from "react-hook-form";
 
 export default function Register() {
   const router = useRouter();
+    const { setUser } = useContext(UserContext); 
+  
 
  
 
@@ -44,7 +48,8 @@ async function onSubmit(values) {
     if (response.status === 201) {
       toast.success("Signup successful!");
       localStorage.setItem("user", JSON.stringify(response.data.user));
-
+         setUser(response.data.user);
+ 
       if (response.data.user.role === "ADMIN") {
         router.push("/admin");
       } else {
@@ -108,9 +113,9 @@ async function onSubmit(values) {
                 </FormItem>
               )}
             />
-
-
+            
 {/* 
+
             <FormField
               control={form.control}
               name="role"

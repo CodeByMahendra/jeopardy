@@ -18,7 +18,7 @@ export async function POST(req) {
       return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
     }
 
-    const resetToken = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: "15m" });
+    const resetToken = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: "25m" });
     const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
 
     let transporter = nodemailer.createTransport({

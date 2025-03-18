@@ -12,7 +12,6 @@ export async function GET(req) {
 
     const token = authHeader.split(" ")[1];
 
-    // 🔹 Decode JWT & Get User ID
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
@@ -22,7 +21,6 @@ export async function GET(req) {
       return NextResponse.json({ error: "Invalid Token" }, { status: 401 });
     }
 
-    // 🔹 Fetch User Data
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, name: true, email: true, score: true },

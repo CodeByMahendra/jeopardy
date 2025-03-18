@@ -1,29 +1,4 @@
 
-// import React from "react";
-// import "./globals.css";
-// import { ToastContainer } from "react-toastify";
-//  import "react-toastify/dist/ReactToastify.css";
-// import Navbar from "@/components/navbar";
-// import { UserProvider } from "@/context/UserContext";
-
-
-// const RootLayout = ({ children }) => {
-//   return (
-//     <html lang="en">
-//       <body suppressHydrationWarning>
-//          <UserProvider>          <Navbar/>
-
-//          {children}</UserProvider>
-
-//           <ToastContainer position="top-right" autoClose={3000} />
-
-        
-//       </body>
-//     </html>
-//   );
-// };
-
-// export default RootLayout;
 
 
 "use client";
@@ -33,12 +8,12 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "@/components/navbar";
-import UserProvider from "@/context/UserContext"; // ✅ Corrected import
+import UserProvider from "@/context/UserContext"; 
 
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <UserProvider>
           <Navbar />
           {children}
