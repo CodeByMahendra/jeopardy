@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen  flex flex-col items-center bg-gradient-to-br from-blue-300 to-purple-600 p-6 ">
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">Leaderboard</h1>
 
       {loading ? (
         <p className="text-lg text-gray-600">Loading...</p>
