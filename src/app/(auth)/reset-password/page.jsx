@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-export default function ResetPassword() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [password, setPassword] = useState("");
@@ -29,9 +29,27 @@ export default function ResetPassword() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-96">
         <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="New Password" required className="w-full p-2 mb-3 border rounded" />
-        <button type="submit" className="w-full bg-green-500 text-white p-2 rounded">Reset Password</button>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="New Password"
+          required
+          className="w-full p-2 mb-3 border rounded"
+        />
+        <button type="submit" className="w-full bg-green-500 text-white p-2 rounded">
+          Reset Password
+        </button>
       </form>
     </div>
+  );
+}
+
+// ✅ Wrap in Suspense to avoid build error
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
