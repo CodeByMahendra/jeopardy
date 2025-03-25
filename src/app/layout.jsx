@@ -1,12 +1,10 @@
 
-
-
 "use client";
 
 import React from "react";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.min.css";
+import 'react-toastify/ReactToastify.css';
 import Navbar from "@/components/navbar";
 import UserProvider from "@/context/UserContext"; 
 
@@ -18,6 +16,7 @@ const RootLayout = ({ children }) => {
           <Navbar />
           {children}
           <ToastContainer position="top-right" autoClose={3000} />
+          
         </UserProvider>
       </body>
     </html>

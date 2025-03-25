@@ -29,7 +29,7 @@ export default function Register() {
       email: "",
       password: "",
       role: "USER",
-      // secretCode: "",
+      secretCode: "",
     },
   });
 
@@ -114,7 +114,7 @@ async function onSubmit(values) {
               )}
             />
             
-{/* 
+
 
             <FormField
               control={form.control}
@@ -147,7 +147,7 @@ async function onSubmit(values) {
                 )}
               />
             )}
-  */}
+  
 
 
 

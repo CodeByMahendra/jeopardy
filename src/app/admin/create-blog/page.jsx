@@ -25,7 +25,7 @@ export default function Admin() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get("/api/admin/categories");
+        const { data } = await axios.get("/api/admin/create-category");
         setCategories(data);
       } catch (error) {
         setError("Failed to fetch categories");
@@ -35,42 +35,40 @@ export default function Admin() {
     fetchCategories();
   }, []);
 
- 
-
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     const validTypes = ["image/jpeg", "image/png", "image/jpg"];
     if (!validTypes.includes(file.type)) {
       alert("Invalid file type. Only JPG, JPEG, and PNG are allowed.");
       return;
     }
-  
+
     setLoading(true);
     const fileName = `${Date.now()}-${file.name}`;
-  
+
     try {
       const { data, error } = await supabase.storage
         .from("jeopardy")
         .upload(fileName, file, { cacheControl: "3600", upsert: false });
-  
+
       if (error) {
         console.error("Error uploading image:", error.message || error);
         alert(`Upload failed: ${error.message || "Unknown error"}`);
         return;
       }
-  
+
       const { data: publicData, error: urlError } = supabase.storage
         .from("jeopardy")
         .getPublicUrl(fileName);
-  
+
       if (urlError) {
         console.error("Error fetching public URL:", urlError.message || urlError);
         alert("Failed to fetch image URL.");
         return;
       }
-  
+
       console.log("Image uploaded successfully:", publicData);
       setImageUrl(publicData.publicUrl);
     } catch (err) {
@@ -80,7 +78,6 @@ export default function Admin() {
       setLoading(false);
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,7 +94,7 @@ export default function Admin() {
         image: imageUrl,
         categoryId: Number(categoryId),
       });
-      toast.success("Blog added successfully")
+      toast.success("Blog added successfully");
       setTitle("");
       setContent("");
       setImageUrl("");
@@ -127,7 +124,6 @@ export default function Admin() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          {/* Content Input */}
           <div>
             <label className="block font-semibold text-gray-700">Content:</label>
             <textarea
@@ -138,7 +134,6 @@ export default function Admin() {
               rows="4"
             />
           </div>
-          {/* Image Upload */}
           <div>
             <label className="block font-semibold text-gray-700">Upload Image:</label>
             <input
@@ -149,7 +144,6 @@ export default function Admin() {
             />
             {imageUrl && <img src={imageUrl} alt="Uploaded" className="mt-2 h-32 w-auto rounded-lg" />}
           </div>
-          {/* Category Selection */}
           <div>
             <label className="block font-semibold text-gray-700">Category:</label>
             <select
@@ -166,7 +160,6 @@ export default function Admin() {
               ))}
             </select>
           </div>
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition duration-300"
@@ -179,3 +172,4 @@ export default function Admin() {
     </div>
   );
 }
+

@@ -21,9 +21,33 @@ export async function POST(req) {
 export async function GET() {
   try {
     const categories = await prisma.category.findMany();
-    return new Response(JSON.stringify(categories), { status: 200 });
+    return new Response(JSON.stringify(categories), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Failed to fetch categories' }), { status: 500 });
-    console.log(error)
+    return new Response(JSON.stringify({ error: 'Failed to fetch categories' }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
+
+
+export async function DELETE(req) {
+  try {
+    const { id } = await req.json(); 
+     console.log("categoryID=",id)
+        if (!id) {
+          return NextResponse.json({ error: "category ID is required" }, { status: 400 });
+        }
+    console.log("Category Id=",id)
+
+
+  } catch (error) {
+    
+  }
+  
+}
+
+

@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Ensure prisma setup is correct
+import { prisma } from "@/lib/prisma"; 
 import jwt from "jsonwebtoken";
 
 export async function GET(req) {
   try {
-    // 🔹 Token Authorization
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

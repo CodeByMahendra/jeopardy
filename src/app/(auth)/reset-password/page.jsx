@@ -45,7 +45,6 @@ function ResetPasswordForm() {
   );
 }
 
-// ✅ Wrap in Suspense to avoid build error
 export default function ResetPassword() {
   return (
     <Suspense fallback={<div>Loading...</div>}>

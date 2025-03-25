@@ -59,41 +59,71 @@ const Dashboard = () => {
   return (
     <div className=" flex ">
       <AdminSidebar />
-      <div className="p-6 w-full">
-  
-      <h1 className="text-3xl font-bold text-white mb-6">Manage Users</h1>
+     
 
-{loading ? (
-  <p className="text-lg text-gray-200">Loading...</p>
-) : (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
-    {users.length > 0 ? (
-      users.map((user, index) => (
-        <div
-          key={user._id || index}
-          className="bg-white shadow-lg p-6 rounded-lg flex flex-col items-center"
-        >
-          <h2 className="text-xl font-semibold text-gray-800">
-            Name: {user.name}
-          </h2>
-          <p className="text-gray-600">Score: {user.score}</p>
-          <button
-  onClick={() => handleDeleteUser(user.id.toString())}
-  className="mt-3 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
->
-  Delete
-</button>
+<div className="p-6 w-full">
+        <h1 className="text-3xl font-bold text-white mb-6">Manage Users</h1>
 
-        </div>
-      ))
-    ) : (
-      <p className="text-lg text-white">No users found!</p>
-    )}
-  </div>
-)}
+        {loading ? (
+          <p className="text-lg text-gray-200">Loading...</p>
+        ) : (
+          <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
+            {users.length > 0 ? (
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-800 text-white">
+                    <th className="border border-gray-300 px-4 py-2">#</th>
+                    <th className="border border-gray-300 px-4 py-2">Name</th>
+                    <th className="border border-gray-300 px-4 py-2">Email</th>
+                    <th className="border border-gray-300 px-4 py-2">Score</th>
+                    <th className="border border-gray-300 px-4 py-2">Membership</th>
+                    <th className="border border-gray-300 px-4 py-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user, index) => (
+                    <tr key={user._id || index} className="text-center hover:bg-gray-100">
+                      <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
+                      <td className="border border-gray-300 px-4 py-2">{user.name}</td>
+                      <td className="border border-gray-300 px-4 py-2">{user.email}</td>
+                      <td className="border border-gray-300 px-4 py-2">{user.score}</td>
+                      <td className="border border-gray-300 px-4 py-2">{user.membership}</td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <button
+                          onClick={() => handleDeleteUser(user.id.toString())}
+                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-lg text-gray-800 text-center">No users found!</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
