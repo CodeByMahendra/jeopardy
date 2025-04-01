@@ -2,13 +2,15 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+
+//create blog category
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { name } = body;
+    const { name,image } = body;
 
     const newCategory = await prisma.category.create({
-      data: { name },
+      data: { name ,image},
     });
 
     return new Response(JSON.stringify(newCategory), { status: 201 });
@@ -18,6 +20,7 @@ export async function POST(req) {
   }
 }
 
+//get all categories of blog
 export async function GET() {
   try {
     const categories = await prisma.category.findMany();
@@ -34,6 +37,7 @@ export async function GET() {
 }
 
 
+//Delete category
 export async function DELETE(req) {
   try {
     const { id } = await req.json(); 

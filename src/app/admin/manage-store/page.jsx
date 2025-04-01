@@ -25,18 +25,18 @@ export default function ProductsPage() {
     }
   };
 
-  const handleUpdate = async () => {
-    if (!editProduct?.id) return;
+  // const handleUpdate = async () => {
+  //   if (!editProduct?.id) return;
 
-    try {
-      await axios.put('/api/admin/create-store', editProduct);
-      toast.success('Product updated successfully');
-      fetchProducts();
-      setEditProduct(null);
-    } catch (error) {
-      toast.error('Error updating product');
-    }
-  };
+  //   try {
+  //     await axios.put('/api/admin/create-store', editProduct);
+  //     toast.success('Product updated successfully');
+  //     fetchProducts();
+  //     setEditProduct(null);
+  //   } catch (error) {
+  //     toast.error('Error updating product');
+  //   }
+  // };
 
   const handleDelete = async (id) => {
     try {
@@ -115,9 +115,9 @@ export default function ProductsPage() {
                   className='border p-2 w-full mt-2'
                   placeholder='Lifetime Price'
                 />
-                <button onClick={() => handleUpdate(product.id)} className='bg-green-500 text-white px-4 py-2 rounded mt-2 w-full'>
+                {/* <button onClick={() => handleUpdate(product.id)} className='bg-green-500 text-white px-4 py-2 rounded mt-2 w-full'>
                   Save
-                </button>
+                </button> */}
               </div>
             ) : (
               <div>
@@ -128,9 +128,9 @@ export default function ProductsPage() {
                 <p className='text-sm text-gray-500'>1 Year Price: ${product.priceOneYear}</p>
                 <p className='text-sm text-gray-500'>Lifetime Price: ${product.priceLifetime}</p>
 
-                <button onClick={() => setEditProduct(product.id)} className='bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full'>
+                {/* <button onClick={() => setEditProduct(product.id)} className='bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full'>
                   Edit
-                </button>
+                </button> */}
                 <button onClick={() => handleDelete(product.id)} className='bg-red-500 text-white px-4 py-2 rounded mt-2 w-full'>
                   Delete
                 </button>

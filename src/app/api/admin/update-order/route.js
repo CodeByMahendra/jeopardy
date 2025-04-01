@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+
+// Update order status in database
 export async function PUT(req) {
     try {
         const body = await req.json();

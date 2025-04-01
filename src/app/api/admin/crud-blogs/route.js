@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 
 
+//Get all blogs
 export async function GET() {
   try {
     const allBlogs = await prisma.blog.findMany();
@@ -17,6 +18,7 @@ export async function GET() {
 
 
 
+//Create blog
 export async function POST(req) {
 
   try {
@@ -43,6 +45,7 @@ export async function POST(req) {
 }
 
 
+//Update blog
 export async function PUT(req) {
   try {
     const body = await req.json();
@@ -71,7 +74,7 @@ export async function PUT(req) {
 
 
 
-
+//Delete blog
 
 export async function DELETE(req) {
   try {

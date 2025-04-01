@@ -1,32 +1,37 @@
+
+
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
- export async function GET() {
 
-    try {
-        
-        const usersWithOrders = await prisma.user.findMany({
-            where: {
-              orders: { some: {} }, 
-            },
-            include: {
-              orders: {
-                include: {
-                  product: true, 
-                },
-              },
-            },
-          });
 
-          return NextResponse.json(usersWithOrders);
+// get all order in database
+export async function GET() {
+  try {
+    const orders = await prisma.order.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        items: {
+          include: {
+            product: true,  
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",  
+      },
+    });
 
-    } catch (error) {
-
-        console.error("Error  usersWithOrders:", error);
-        return NextResponse.json({ message: "Error  usersWithOrders", error }, { status: 500 });
-        
-    }
-
-    
- }
-
+    return NextResponse.json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return NextResponse.json({ message: "Error fetching orders", error }, { status: 500 });
+  }
+}

@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { aL } from "better-auth/dist/shared/better-auth.purQujiV";
 
+// get all products in database
+
 export async function GET() {
 
     try {

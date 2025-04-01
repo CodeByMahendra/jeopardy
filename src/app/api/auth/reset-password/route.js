@@ -3,13 +3,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
-const SECRET_KEY = process.env.SECRET_KEY; 
+const JWT_SECRET = process.env.JWT_SECRET; 
 
 export async function POST(req) {
   try {
     const { password, token } = await req.json();
 
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const decoded = jwt.verify(token, JWT_SECRET);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.update({

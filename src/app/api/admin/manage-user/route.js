@@ -3,6 +3,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+//Delete user from database
+
 export async function DELETE(req) {
   try {
     const { id } = await req.json(); 

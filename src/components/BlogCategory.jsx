@@ -1,4 +1,9 @@
+
+
+
+"use client";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function BlogCategory() {
   const [categories, setCategories] = useState([]);
@@ -8,11 +13,13 @@ export default function BlogCategory() {
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    // Fetch categories from API
     const fetchCategories = async () => {
-      const res = await fetch("/api/admin/categories");
-      const data = await res.json();
-      setCategories(data);
+      try {
+        const { data } = await axios.get("/api/admin/categories");
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
     };
 
     fetchCategories();
@@ -23,26 +30,17 @@ export default function BlogCategory() {
     setLoading(true);
     setMessage(null);
 
-    const res = await fetch("/api/admin/create-category", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: categoryName }),
-    });
-
-    setLoading(false);
-
-    if (res.ok) {
+    try {
+      const { data } = await axios.post("/api/admin/create-category", { name: categoryName });
       setMessage({ type: "success", text: "✅ Category created successfully!" });
       setCategoryName("");
-
-      // Update categories list
-      const newCategory = await res.json();
-      setCategories([...categories, newCategory]);
-    } else {
+      setCategories([...categories, data]); 
+    } catch (error) {
       setMessage({ type: "error", text: "❌ Failed to create category." });
+      console.error("Error creating category:", error);
     }
+
+    setLoading(false);
   };
 
   return (

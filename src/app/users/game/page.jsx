@@ -1,9 +1,13 @@
 
 
+
+
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function QuizGame() {
   const [questions, setQuestions] = useState([]);
@@ -11,66 +15,67 @@ export default function QuizGame() {
   const [attemptedQuestions, setAttemptedQuestions] = useState({});
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(null);
   const router = useRouter();
+  const { data: session, status } = useSession();
 
-  const fetchToken = async () => {
-    try {
-      const res = await fetch("/api/auth/token", { credentials: "include" });
-      const data = await res.json();
-      if (data.token) {
-        setToken(data.token);
-        return data.token;
-      }
-    } catch (error) {
-      console.error("Error fetching token:", error);
-    }
-    return null;
-  };
+
+  
+  
 
   useEffect(() => {
     const initializeGame = async () => {
-      const storedUser = localStorage.getItem("user");
-      const authToken = await fetchToken(); 
-
-      if (!storedUser || !authToken) {
-        console.error("No user or token found");
-        router.push("/sign-in");
-        return;
-      }
-
-      const user = JSON.parse(storedUser);
-      const userId = user?.id;
-      if (!userId) {
+      if (status === "loading") return;
+      if (!session || !session.user || !session.user.id) {
         console.error("User ID is missing");
         router.push("/sign-in");
         return;
       }
-
+  
+      const userId = session.user.id;
+      console.log("User Id:", userId);
+  
       try {
         setLoading(true);
 
-        const res = await fetch("/api/questions", {
-          headers: { Authorization: `Bearer ${authToken}` },
+       const token = session.accessToken
+       console.log("Token:", token);
+  
+        if (!token) throw new Error("No authentication token available");
+  
+        const questionRes = await fetch("/api/questions", {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
-        setQuestions(data);
-
+        if (!questionRes.ok) throw new Error("Failed to fetch questions");
+  
+        const questionData = await questionRes.json();
+        console.log("Questions:", questionData);
+        setQuestions(questionData);
+  
         const scoreRes = await fetch(`/api/game/get-score?userId=${userId}`, {
-          headers: { Authorization: `Bearer ${authToken}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
+        if (!scoreRes.ok) throw new Error("Failed to fetch score");
+  
         const scoreData = await scoreRes.json();
+        console.log("Score Data:", scoreData);
         setScore(scoreData?.score || 0);
-
+  
         const attemptRes = await fetch("/api/game/get-attempts", {
-          headers: { Authorization: `Bearer ${authToken}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
+        if (!attemptRes.ok) throw new Error("Failed to fetch attempts");
+  
         const attemptData = await attemptRes.json();
-
+        console.log("Attempt Data:", attemptData);
+  
         const attemptMap = {};
-        attemptData.attempts.forEach(({ questionId, isCorrect }) => {
-          attemptMap[questionId] = isCorrect ? "correct" : "wrong";
-        });
+        if (attemptData && Array.isArray(attemptData.attempts)) {
+          attemptData.attempts.forEach(({ questionId, isCorrect }) => {
+            attemptMap[questionId] = isCorrect ? "correct" : "wrong";
+          });
+        } else {
+          console.error("Invalid attempt data format:", attemptData);
+        }
         setAttemptedQuestions(attemptMap);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -78,9 +83,21 @@ export default function QuizGame() {
         setLoading(false);
       }
     };
-
+  
     initializeGame();
-  }, [router]);
+  }, [session, status, router]);
+  
+  
+
+
+
+
+
+
+
+
+
+
 
   const handleQuestionClick = (question) => {
     if (!attemptedQuestions[question.id]) {
@@ -89,6 +106,9 @@ export default function QuizGame() {
   };
 
   const handleAnswer = async (option) => {
+
+    const token = session.accessToken
+
     if (!selectedQuestion || attemptedQuestions[selectedQuestion.id] !== undefined) return;
 
     const isCorrect = option === selectedQuestion.answer;

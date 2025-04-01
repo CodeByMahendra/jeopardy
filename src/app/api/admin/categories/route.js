@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
+
+//get all categories of blog
 export async function GET() {
   try {
     const categories = await prisma.category.findMany();
@@ -18,6 +20,8 @@ export async function GET() {
     });
   }
 }
+
+// delete category
 
 export async function DELETE(req) {
   try {

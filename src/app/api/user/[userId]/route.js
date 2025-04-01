@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+
 export async function GET(req, { params }) {
     try {
         console.log("API Called: Fetching user profile");  
@@ -18,7 +19,19 @@ export async function GET(req, { params }) {
                         id: true,
                         total: true,
                         status: true,
-                        createdAt: true
+                        createdAt: true,
+                        items: {
+                            select: {
+                                id: true,
+                                quantity: true,
+                                price: true,
+                                product: {
+                                    select: {
+                                        name: true
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -28,6 +41,9 @@ export async function GET(req, { params }) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
+  
+        
+
         return NextResponse.json({ user }, { status: 200 });
 
     } catch (error) {
@@ -35,4 +51,3 @@ export async function GET(req, { params }) {
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
 }
-

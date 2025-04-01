@@ -10,16 +10,19 @@ export async function POST(req) {
         const body = await req.json();
         const { questionId, selectedOption } = body;
 
+        console.log("Question ID:", questionId);
+        console.log("Selected Option:", selectedOption);
         const authHeader = req.headers.get("authorization");
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const token = authHeader.split(" ")[1];
+        console.log("Token:", token);
         let decoded;
 
         try {
-            decoded = jwt.verify(token, process.env.SECRET_KEY);
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
         } catch (err) {
             return NextResponse.json({ error: "Invalid or expired token" }, { status: 403 });
         }

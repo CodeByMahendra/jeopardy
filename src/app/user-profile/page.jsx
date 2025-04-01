@@ -1,85 +1,65 @@
-"use client"
+
+
+
+
+"use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
+import { useSession } from "next-auth/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import MembershipUpdateForm from "@/components/Membership";
 
 export default function ProfilePage() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
-    useEffect(() => {
-        async function fetchUserProfile() {
-            const storedUser = localStorage.getItem("user");
-            if (!storedUser) {
-                console.error("No user found in localStorage");
-                setLoading(false);
-                return;
-            }
+  useEffect(() => {
+    async function fetchUserProfile() {
+      if (status === "loading") return;
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
 
-            const users = JSON.parse(storedUser);
-            const userId = users?.id;
-            console.log("UserId==", userId);
+      try {
+        const res = await fetch(`/api/user/${session.user.id}`);
+        if (!res.ok) throw new Error("Failed to fetch user data");
 
-            if (!userId) {
-                console.error("User ID is missing");
-                setLoading(false);
-                return;
-            }
+        const data = await res.json();
+        setUser(data.user);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+      setLoading(false);
+    }
 
-            try {
-                const res = await fetch(`${window.location.origin}/api/user/${userId}`);
-                if (!res.ok) throw new Error("Failed to fetch user data");
+    fetchUserProfile();
+  }, [session, status]);
 
-                const data = await res.json(); // FIXED: JSON extract karna
-                setUser(data.user);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching user profile:", error);
-                setLoading(false);
-            }
-        }
-        fetchUserProfile();
-    }, []);
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+  };
 
-    if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (!user) return <p className="text-center mt-10">User not logged in</p>;
 
-    return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-            <div className="flex items-center space-x-4">
-                <UserCircleIcon className="w-16 h-16 text-gray-500" />
-                <div>
-                    <h2 className="text-2xl font-semibold">{user?.name}</h2>
-                    <p className="text-gray-600">{user?.email}</p>
-                    <p className="text-gray-700">Score: {user?.score}</p>
-                    <p className="text-gray-700">Membership: {user?.membership || "None"}</p>
-                </div>
-            </div>
-
-            <div className="mt-6">
-                <MembershipUpdateForm />
-            </div>
-
-            <div className="mt-8">
-                <h3 className="text-xl font-semibold">Order History</h3>
-                {user?.orders?.length > 0 ? (
-                    <ul className="mt-4">
-                        {user.orders.map((order) => (
-                            <li key={order.id} className="border p-3 rounded-md mt-2">
-                                <p>Order ID: {order.id}</p>
-                                <p>Total: <span className="font-bold">{order.total}</span></p>
-
-                                <p>Status: <span className="font-bold">{order.status}</span></p>
-                                <p>Placed On: {new Date(order.createdAt).toLocaleDateString()}</p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-600">No orders found.</p>
-                )}
-            </div>
+  return (
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
+      <div className="flex flex-col md:flex-row items-center space-x-4 p-6 bg-blue-50 rounded-lg shadow">
+        <UserCircleIcon className="w-20 h-20 text-blue-500" />
+        <div>
+          <h2 className="text-3xl font-bold text-gray-800">{user?.name}</h2>
+          <p className="text-gray-600">{user?.email}</p>
+          <p className="text-gray-700 font-semibold">Score: {user?.score}</p> {/* 🟢 Updates instantly */}
+          <p className="text-gray-700 font-semibold">
+            Membership: <span className="text-blue-600">{user?.membership || "None"}</span>
+          </p>
         </div>
-    );
+      </div>
+
+      <div className="mt-6">
+        <MembershipUpdateForm currentMembership={user?.membership} userId={user?.id} updateUser={updateUser} />
+      </div>
+    </div>
+  );
 }

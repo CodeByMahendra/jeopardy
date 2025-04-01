@@ -33,7 +33,6 @@ export async function POST(req) {
         <p>Best Regards,<br/>Support Team</p>`,
     };
 
-    // Send Both Emails
     await Promise.all([
       emailApi.sendTransacEmail(adminEmailData),
       emailApi.sendTransacEmail(userEmailData),
@@ -52,3 +51,4 @@ export async function POST(req) {
     });
   }
 }
+

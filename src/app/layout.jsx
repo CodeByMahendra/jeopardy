@@ -7,17 +7,24 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.css';
 import Navbar from "@/components/navbar";
 import UserProvider from "@/context/UserContext"; 
+import { SessionProvider } from "next-auth/react";
+
 
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <UserProvider>
+        <SessionProvider>
+          <UserProvider>
           <Navbar />
           {children}
           <ToastContainer position="top-right" autoClose={3000} />
           
         </UserProvider>
+
+        
+        </SessionProvider>
+       
       </body>
     </html>
   );

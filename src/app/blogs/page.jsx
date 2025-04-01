@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ export default function Home() {
     const fetchCategories = async () => {
       try {
         const { data } = await axios.get("/api/admin/categories");
-        console.log(data.data)
+        console.log(data.data);
         setCategories(data);
       } catch (error) {
         setError("Failed to fetch categories");
@@ -27,23 +28,33 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
-      <h1 className="text-2xl font-bold text-center mb-4">Blog Categories</h1>
+    <div className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
+      <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Blog Categories</h1>
+      
       {loading && <p className="text-center text-gray-600">Loading...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
-      <ul className="space-y-3">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {categories.map((category) => (
-          <li key={category.id} className="p-3 border rounded-lg hover:bg-gray-100">
-           
+          <Link 
+            key={category.id} 
+            href={`/blogs/${category.name.toLowerCase()}`}
+            className="p-4 border rounded-lg shadow-lg bg-gray-50 hover:shadow-xl transition transform hover:scale-105 active:scale-95"
+          >
+            <img
+              src={category.image}
+              alt={category.name}
+              className="w-full h-60 object-cover rounded-md cursor-pointer hover:opacity-90 transition"
+            />
 
-            
-            <Link href={`/blogs/${category.name.toLowerCase()}`} className="text-blue-600 hover:underline">
-  {category.name}
-</Link>
-
-          </li>
+            <div className="mt-4 text-center">
+              <h2 className="text-lg font-semibold text-blue-600 hover:underline">
+                {category.name}
+              </h2>
+            </div>
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

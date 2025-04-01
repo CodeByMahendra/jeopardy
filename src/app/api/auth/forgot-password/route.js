@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
 const prisma = new PrismaClient();
-const SECRET_KEY = process.env.SECRET_KEY; 
+const JWT_SECRET = process.env.JWT_SECRET; 
 
 export async function POST(req) {
   try {
@@ -18,7 +18,7 @@ export async function POST(req) {
       return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
     }
 
-    const resetToken = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: "25m" });
+    const resetToken = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "25m" });
     const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
 
     let transporter = nodemailer.createTransport({

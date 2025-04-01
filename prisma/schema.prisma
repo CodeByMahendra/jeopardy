@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,6 +6,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
 
 model User {
   id               String     @id @default(uuid())
@@ -21,24 +21,31 @@ model User {
   image            String?
   resetToken       String?
   resetTokenExpiry DateTime?
+  membershipExpiry DateTime?  
+  orderItems       OrderItem[]
+
   accounts         Account[]
   attempts         Attempt[]
-  sessions         Session[]
+  cart             Cart?
   orders           Order[]
-  cart             Cart[] 
+  sessions         Session[]
 }
 
 
 model Order {
   id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
   userId    String
-  product   Product  @relation(fields: [productId], references: [id])
-  productId String
+  isDigital Boolean  @default(false) 
+  items     OrderItem[]
   total     Int
   status    String   @default("Pending")
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
+
+
+
+
 
 model Product {
   id            String        @id @default(uuid())
@@ -46,27 +53,46 @@ model Product {
   image         String
   description   String?
   categoryId    String
-  category      Storecategory @relation(fields: [categoryId], references: [id])
   basePrice     Float
   priceOneMonth Float
   priceOneYear  Float
   priceLifetime Float
+  type          ProductType   @default(PHYSICAL)
+  fileUrl       String?       
   createdAt     DateTime      @default(now())
-  orders        Order[] 
-    cartItems             CartItem[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]  
+  category      Storecategory @relation(fields: [categoryId], references: [id])
 }
+
+
+enum ProductType {
+  PHYSICAL
+  DIGITAL
+}
+
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  userId     String?  
+  productId  String
+  order      Order    @relation(fields: [orderId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id]) 
+  quantity   Int
+  price      Float
+  totalPrice Float
+  isDigital  Boolean 
+}
+
+
 
 model Storecategory {
   id       String    @id @default(uuid())
   name     String    @unique
+  image    String
   products Product[]
-}
-
-enum Membership {
-  NONE
-  ONE_MONTH
-  ONE_YEAR
-  LIFETIME
 }
 
 model Account {
@@ -117,6 +143,7 @@ model VerificationToken {
 model Category {
   name  String @unique
   id    Int    @id @default(autoincrement())
+  image String
   blogs Blog[]
 }
 
@@ -132,26 +159,37 @@ model Blog {
 model Cart {
   id        String     @id @default(uuid())
   userId    String     @unique
-  items     CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-
-  user      User       @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
 }
 
 model CartItem {
-  id        String   @id @default(uuid())
+  id        String  @id @default(uuid())
   cartId    String
   productId String
-  quantity  Int
+  quantity  Int     @default(1) 
   price     Float
 
-  cart     Cart     @relation(fields: [cartId], references: [id])
-  product  Product  @relation(fields: [productId], references: [id]) 
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId]) 
 }
 
+enum Membership {
+  NONE
+  ONE_MONTH
+  ONE_YEAR
+  LIFETIME
+}
 
 enum Role {
   USER
   ADMIN
 }
+
+
+
+

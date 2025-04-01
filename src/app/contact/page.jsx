@@ -1,5 +1,7 @@
 
 
+
+
 "use client";
 
 import { useState } from "react";
@@ -8,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ReCAPTCHA from "react-google-recaptcha";
 import * as z from "zod";
+import axios from "axios";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -34,45 +37,21 @@ export default function ContactUs() {
     }
 
     try {
-      // Verify reCAPTCHA
-      const captchaResponse = await fetch("/api/verify-recaptcha", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: captchaValue }),
-      });
+      const { data: captchaData } = await axios.post("/api/verify-recaptcha", { token: captchaValue });
 
-      const captchaData = await captchaResponse.json();
-      if (!captchaResponse.ok || !captchaData.success) {
+      if (!captchaData.success) {
         toast.error("reCAPTCHA verification failed. Please try again.");
         return;
       }
 
-      // Send Contact Form Data
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, recaptchaToken: captchaValue }),
-      });
-
-      let result;
-      try {
-        result = await response.json();
-      } catch (err) {
-        console.error("Invalid JSON response", err);
-        toast.error("Server error: Invalid response format.");
-        return;
-      }
-
-      if (response.ok) {
-        toast.success("Message sent successfully!");
-        form.reset();
-        setCaptchaValue(null);
-      } else {
-        toast.error(result?.message || "Failed to send message.");
-      }
+      const { data: result } = await axios.post("/api/contact", { ...values, recaptchaToken: captchaValue });
+      
+      toast.success("Message sent successfully!");
+      form.reset();
+      setCaptchaValue(null);
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("An error occurred while sending the message.");
+      toast.error(error.response?.data?.message || "An error occurred while sending the message.");
     }
   }
 
@@ -102,10 +81,7 @@ export default function ContactUs() {
           </div>
 
           <div>
-            <ReCAPTCHA
-              sitekey="6LcU3PYqAAAAANbIvuohAW1zGIiUKrgsuD31rHcM"
-              onChange={(token) => setCaptchaValue(token)}
-            />
+            <ReCAPTCHA sitekey="6LcU3PYqAAAAANbIvuohAW1zGIiUKrgsuD31rHcM" onChange={(token) => setCaptchaValue(token)} />
           </div>
 
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Submit</button>

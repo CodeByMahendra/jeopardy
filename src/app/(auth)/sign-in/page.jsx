@@ -1,8 +1,7 @@
 
-
 "use client";
 import axios from "axios";
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/context/UserContext"; 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,10 +14,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { signInFormSchema } from "@/lib/auth-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   const router = useRouter();
-  const { setUser } = useContext(UserContext); 
+  const { setUser } = useContext(UserContext) || {}; 
 
   const form = useForm({
     resolver: zodResolver(signInFormSchema),
@@ -28,30 +28,41 @@ export default function Login() {
     },
   });
 
-  async function onSubmit(values) {
+  const onSubmit = async (values) => {
     console.log("Form Values Sent:", values);
 
     try {
-      axios.defaults.withCredentials = true;
-      const response = await axios.post("/api/auth/login", values, { withCredentials: true });
+      const res = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
 
-      console.log("Login Response:", response.data);
-      if (response.status === 200) {
+      console.log("Login Response:", res);
+
+      if (res?.error) {
+        toast.error("Login failed: " + res.error);
+      } else {
         toast.success("Login successful!");
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        setUser(response.data.user);
+    
+        if (setUser) setUser(values); 
 
-        if (response.data.user.role === "ADMIN") {
-          router.push("/admin");
-        } else {
-          router.push("/users/game");
-        }
+        router.push("/users/game");
       }
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      toast.error(error.response?.data?.error || "Login failed.");
+      console.error("Login error:", error.message);
+      toast.error("An unexpected error occurred.");
     }
-  }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google", { callbackUrl: "/users/game" });
+    } catch (error) {
+      console.error("Google Sign-in Error:", error);
+      toast.error("Google Sign-in failed!");
+    }
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -95,6 +106,16 @@ export default function Login() {
             </Button>
           </form>
         </Form>
+
+        <div className="flex items-center my-4">
+          <hr className="flex-grow border-gray-300" />
+          <span className="px-2 text-sm text-muted-foreground">OR</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+
+        <Button onClick={handleGoogleSignIn} className="w-full bg-red-500 hover:bg-red-600">
+          Sign in with Google
+        </Button>
       </CardContent>
 
       <CardFooter className="flex justify-center">

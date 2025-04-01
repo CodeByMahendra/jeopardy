@@ -1,6 +1,5 @@
 
 
-
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -33,25 +32,53 @@ export async function POST(req) {
       return NextResponse.json({ error: "Not enough score" }, { status: 400 });
     }
 
+   
+
+    // Create order
+const order = await prisma.order.create({
+  data: {
+    userId,
+    total: totalCost,
+    status: "Pending",
+    isDigital: cart.items.some(item => item.product.type === "DIGITAL"),
+    items: {
+      create: cart.items.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        price: user.membership === "LIFETIME" ? item.product.priceLifetime :
+               user.membership === "ONE_YEAR" ? item.product.priceOneYear :
+               user.membership === "ONE_MONTH" ? item.product.priceOneMonth :
+               item.product.basePrice,
+        totalPrice: item.quantity * (
+          user.membership === "LIFETIME" ? item.product.priceLifetime :
+          user.membership === "ONE_YEAR" ? item.product.priceOneYear :
+          user.membership === "ONE_MONTH" ? item.product.priceOneMonth :
+          item.product.basePrice
+        ),
+        isDigital: item.product.type === "DIGITAL",
+        orderId: undefined, 
+      })),
+    },
+  },
+  include: {
+    items: true,
+  },
+});
+
+
     await prisma.$transaction([
-      prisma.order.createMany({
-        data: cart.items.map((item) => ({
-          userId,
-          productId: item.product.id,
-          total: item.quantity * (
-            user.membership === "LIFETIME" ? item.product.priceLifetime :
-            user.membership === "ONE_YEAR" ? item.product.priceOneYear :
-            user.membership === "ONE_MONTH" ? item.product.priceOneMonth :
-            item.product.basePrice
-          ),
-          status: "Pending",
-        })),
+      prisma.user.update({
+        where: { id: userId },
+        data: { score: user.score - totalCost },
       }),
-      prisma.user.update({ where: { id: userId }, data: { score: user.score - totalCost } }),
       prisma.cartItem.deleteMany({ where: { cartId: cart.id } }),
     ]);
 
-    return NextResponse.json({ message: "Order placed successfully", newScore: user.score - totalCost }, { status: 200 });
+    return NextResponse.json({
+      message: "Order placed successfully",
+      newScore: user.score - totalCost,
+      order, 
+    }, { status: 200 });
 
   } catch (error) {
     console.error("Order error:", error);

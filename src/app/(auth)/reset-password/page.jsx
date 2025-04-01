@@ -1,21 +1,34 @@
+
 "use client";
-import { useState, useEffect, Suspense } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 function ResetPasswordForm() {
-  const searchParams = useSearchParams();
   const router = useRouter();
+  const searchParams = useSearchParams(); 
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    setToken(searchParams.get("token") || "");
-  }, [searchParams]);
+    const urlToken = searchParams.get("token"); 
+    if (!urlToken) {
+      toast.error("Invalid or missing token!");
+      router.push("/forgot-password"); 
+    } else {
+      setToken(urlToken);
+    }
+  }, [searchParams, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!token) {
+      toast.error("Invalid or expired reset link!");
+      return;
+    }
+
     try {
       await axios.post("/api/auth/reset-password", { password, token });
       toast.success("Password reset successful!");
@@ -45,10 +58,4 @@ function ResetPasswordForm() {
   );
 }
 
-export default function ResetPassword() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ResetPasswordForm />
-    </Suspense>
-  );
-}
+export default ResetPasswordForm;

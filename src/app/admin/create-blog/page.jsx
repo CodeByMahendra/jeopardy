@@ -41,7 +41,7 @@ export default function Admin() {
 
     const validTypes = ["image/jpeg", "image/png", "image/jpg"];
     if (!validTypes.includes(file.type)) {
-      alert("Invalid file type. Only JPG, JPEG, and PNG are allowed.");
+      toast.error("Invalid file type. Only JPG, JPEG, and PNG are allowed.");
       return;
     }
 
@@ -55,7 +55,7 @@ export default function Admin() {
 
       if (error) {
         console.error("Error uploading image:", error.message || error);
-        alert(`Upload failed: ${error.message || "Unknown error"}`);
+        toast.error(`Upload failed: ${error.message || "Unknown error"}`);
         return;
       }
 
@@ -65,7 +65,7 @@ export default function Admin() {
 
       if (urlError) {
         console.error("Error fetching public URL:", urlError.message || urlError);
-        alert("Failed to fetch image URL.");
+        toast.error("Failed to fetch image URL.");
         return;
       }
 
@@ -73,7 +73,7 @@ export default function Admin() {
       setImageUrl(publicData.publicUrl);
     } catch (err) {
       console.error("Unexpected error:", err);
-      alert("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -82,7 +82,7 @@ export default function Admin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !content || !imageUrl || !categoryId) {
-      alert("All fields are required!");
+      toast.error("All fields are required!");
       return;
     }
 

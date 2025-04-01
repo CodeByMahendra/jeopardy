@@ -4,6 +4,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+//Get all products
+
 export async function GET() {
   try {
     const allproducts = await prisma.product.findMany();
@@ -15,6 +17,7 @@ export async function GET() {
   }
 }
 
+//update product
 export async function PUT(req) {
   try {
     const body = await req.json();
@@ -39,6 +42,8 @@ export async function PUT(req) {
   }
 }
 
+
+//delete product
 export async function DELETE(req) {
   try {
     const body = await req.json();
@@ -64,15 +69,16 @@ export async function DELETE(req) {
 
 
 
+//create product
 
 export async function POST(req) {
   try {
     const body = await req.json();
     console.log("Received data=", body);
 
-    const { name, image, description, category, basePrice, priceOneMonth, priceOneYear, priceLifetime } = body;
+    const { name, image, description, category, basePrice, priceOneMonth, priceOneYear, priceLifetime ,type,fileUrl} = body;
 
-    if (!name || !image || !description || !category || !basePrice || !priceOneMonth || !priceOneYear || !priceLifetime) {
+    if (!name || !image || !description || !category || !basePrice || !priceOneMonth || !priceOneYear || !priceLifetime  ) {
       return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
 
@@ -87,7 +93,9 @@ export async function POST(req) {
         priceLifetime,
         category: {
           connect: { id: category } 
-        }
+        },
+        fileUrl,
+        type
       }
     });
 

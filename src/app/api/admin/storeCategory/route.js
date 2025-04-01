@@ -3,13 +3,15 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+// Create a new category in the database for store
+
 export async function POST(req) {
     try {
         const body = await req.json()
-        const {name} = body
+        const {name,image} = body
 
         const newCategory = await prisma.storecategory.create({
-            data:{name},
+            data:{name,image},
     })
     return new Response(JSON.stringify(newCategory), { status: 200 });
 
@@ -19,7 +21,7 @@ export async function POST(req) {
     }
 }
 
-
+// Get all categories of store
 export async function GET(req){
     try {
         const allCategories = await prisma.storecategory.findMany()
@@ -38,7 +40,7 @@ export async function GET(req){
 }
 
 
-
+// Delete category
 export async function DELETE(req) {
   try {
     const { id } = await req.json();
