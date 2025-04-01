@@ -6,6 +6,9 @@
 const NextAuth = require("next-auth").default;
 const CredentialsProvider = require("next-auth/providers/credentials").default;
 const GoogleProvider = require("next-auth/providers/google").default;
+
+
+
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
