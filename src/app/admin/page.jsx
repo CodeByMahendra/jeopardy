@@ -2,65 +2,54 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import jwt from "jsonwebtoken";
-import { useSession } from "next-auth/react";
+// import jwt from "jsonwebtoken";
+// import { useSession } from "next-auth/react";
 
 import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminDashboard() {
 
-      const { data: session, status } = useSession();
+    //   const { data: session, status } = useSession();
     
-    const [loading, setLoading] = useState(true);
-    // const [token, setToken] = useState(null);
-    const router = useRouter();
+    // const [loading, setLoading] = useState(true);
+    // const router = useRouter();
 
-    // const fetchToken = async () => {
-    //     try {
-    //         const res = await fetch("/api/auth/token", { credentials: "include" });
-    //         const data = await res.json();
-    //         if (data.token) {
-    //             setToken(data.token);
-    //             return data.token;
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching token:", error);
-    //     }
-    //     return null;
-    // };
 
-    useEffect(() => {
-        const checkAuth = async () => {
+    // useEffect(() => {
 
-            if (status === "loading") return;
+    //     const checkAuth = async () => {
+
+    //         if (status === "loading") return;
        
       
-            const token = session.accessToken;
+    //         const token = session.accessToken;
 
-            if (!token) {
-                router.push("/sign-in");
-                return;
-            }
+    //         console.log("token", token);
 
-            try {
-                const decoded = jwt.decode(token); 
-                if (!decoded || decoded.role !== "admin") {
-                    router.push("/admin");
-                    return;
-                }
-            } catch (error) {
-                router.push("/sign-in");
-            } finally {
-                setLoading(false);
-            }
-        };
+    //         if (!token) {
+    //             router.push("/sign-in");
+    //             return;
+    //         }
 
-        checkAuth();
-    }, [router]);
+    //         try {
+    //             const decoded = jwt.decode(token); 
+    //             if (!decoded || decoded.role !== "admin") {
+    //                 router.push("/admin");
+    //                 return;
+    //             }
+    //         } catch (error) {
+    //             router.push("/sign-in");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
 
-    if (loading) return <p className="text-center mt-10 text-lg">Loading...</p>;
+    //     checkAuth();
+    // }, [router]);
+
+    // if (loading) return <p className="text-center mt-10 text-lg">Loading...</p>;
 
     return (
         <div className="flex h-screen">
