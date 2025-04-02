@@ -57,8 +57,8 @@ export default function Navbar() {
         <div className="flex items-center font-bold gap-5 text-gray-700">
           {user?.role === "USER" && (
             <>
-              <Link href="/users/game" className="hover:text-blue-600 transition">Play Quiz</Link>
-              <Link href="/users/leaderboard" className="hover:text-blue-600 transition">Leaderboard</Link>
+              <Link href="/game" className="hover:text-blue-600 transition">Play Quiz</Link>
+              <Link href="/leaderboard" className="hover:text-blue-600 transition">Leaderboard</Link>
               <Link href="/store" className="hover:text-blue-600 transition">Store</Link>
             </>
           )}
@@ -101,7 +101,7 @@ export default function Navbar() {
                   )}
                   {user.role === "USER" && (
 
-                     <Link href="/users/my-wishlist" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">
+                     <Link href="/my-wishlist" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">
                     My wishlist
                      </Link>
                   )}

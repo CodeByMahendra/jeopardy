@@ -54,8 +54,7 @@ export default function ProfilePage() {
     if (orders.length === 0) return <p>No orders</p>;
 
     return (
-        // <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-        <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-300 to-purple-600 p-6">
+        <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
                         <h3 className="text-xl font-semibold mt-10">Order History</h3>
 
             <DigitalOrders/>
