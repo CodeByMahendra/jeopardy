@@ -67,7 +67,7 @@ export default withAuth(
     }
 
     if (token.role === "USER" && pathname.startsWith("/admin")) {
-      return NextResponse.redirect(new URL("/users/game", req.url));
+      return NextResponse.redirect(new URL("/game", req.url));
     }
 
     if (token.role === "ADMIN" && pathname.startsWith("/users")) {

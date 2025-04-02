@@ -5,30 +5,39 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
+import { useSession } from "next-auth/react";
+
 import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminDashboard() {
+
+      const { data: session, status } = useSession();
+    
     const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState(null);
+    // const [token, setToken] = useState(null);
     const router = useRouter();
 
-    const fetchToken = async () => {
-        try {
-            const res = await fetch("/api/auth/token", { credentials: "include" });
-            const data = await res.json();
-            if (data.token) {
-                setToken(data.token);
-                return data.token;
-            }
-        } catch (error) {
-            console.error("Error fetching token:", error);
-        }
-        return null;
-    };
+    // const fetchToken = async () => {
+    //     try {
+    //         const res = await fetch("/api/auth/token", { credentials: "include" });
+    //         const data = await res.json();
+    //         if (data.token) {
+    //             setToken(data.token);
+    //             return data.token;
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching token:", error);
+    //     }
+    //     return null;
+    // };
 
     useEffect(() => {
         const checkAuth = async () => {
-            const token = await fetchToken(); 
+
+            if (status === "loading") return;
+       
+      
+            const token = session.accessToken;
 
             if (!token) {
                 router.push("/sign-in");

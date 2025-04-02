@@ -67,7 +67,17 @@ export default function Navbar() {
           <Link href="/contact" className="hover:text-blue-600 transition">Contact</Link>
 
           {user?.role === "ADMIN" && (
-            <Link href="/admin" className="hover:text-blue-600 transition">Admin</Link>
+<>
+
+
+<Link href="/game" className="hover:text-blue-600 transition">Play Quiz</Link>
+
+<Link href="/admin" className="hover:text-blue-600 transition">Admin</Link>
+
+</>
+                         
+            
+           
           )}
 
           {user?.role === "USER" && (

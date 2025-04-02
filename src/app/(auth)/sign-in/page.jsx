@@ -39,6 +39,7 @@ export default function Login() {
       });
 
       console.log("Login Response:", res);
+      console.log("Login Response Status:", res.data);
 
       if (res?.error) {
         toast.error("Login failed: " + res.error);
@@ -47,7 +48,7 @@ export default function Login() {
     
         if (setUser) setUser(values); 
 
-        router.push("/users/game");
+        router.push("/game");
       }
     } catch (error) {
       console.error("Login error:", error.message);
@@ -57,7 +58,7 @@ export default function Login() {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google", { callbackUrl: "/users/game" });
+      await signIn("google", { callbackUrl: "/game" });
     } catch (error) {
       console.error("Google Sign-in Error:", error);
       toast.error("Google Sign-in failed!");
