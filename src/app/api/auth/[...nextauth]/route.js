@@ -83,11 +83,26 @@ const authOptions = {
       return true;
     },
 
+    // async jwt({ token, user }) {
+    //   if (user) {
+    //     token.id = user.id;
+    //     token.role = user.role || "USER";
+
+    //     token.accessToken = jwt.sign(
+    //       { id: user.id, email: user.email, role: user.role },
+    //       process.env.JWT_SECRET,
+    //       { expiresIn: "1h" }
+    //     );
+    //   }
+    //   return token;
+    // },
+
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role || "USER";
-
+        token.role = user.role || "USER"; 
+    
         token.accessToken = jwt.sign(
           { id: user.id, email: user.email, role: user.role },
           process.env.JWT_SECRET,
@@ -96,20 +111,38 @@ const authOptions = {
       }
       return token;
     },
+    
 
 
 
+    // async session({ session, token }) {
+    //   if (token) {
+    //     const dbUser = await prisma.user.findUnique({
+    //       where: { id: token.id },
+    //       select: { id: true, name: true, email: true, role: true, membership: true }, 
+    //     });
+    
+    //     if (dbUser) {
+    //       session.user.id = dbUser.id;
+    //       session.user.role = dbUser.role;
+    //       session.user.membership = dbUser.membership || "NONE"; 
+    //       session.accessToken = token.accessToken;
+    //     }
+    //   }
+    //   return session;
+    // }
+    
 
     async session({ session, token }) {
       if (token) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id },
-          select: { id: true, name: true, email: true, role: true, membership: true }, 
+          select: { id: true, name: true, email: true, role: true, membership: true },
         });
     
         if (dbUser) {
           session.user.id = dbUser.id;
-          session.user.role = dbUser.role;
+          session.user.role = dbUser.role || "USER"; // Ensure role is passed
           session.user.membership = dbUser.membership || "NONE"; 
           session.accessToken = token.accessToken;
         }
