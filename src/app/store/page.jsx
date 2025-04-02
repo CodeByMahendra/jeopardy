@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { toast } from 'react-toastify';
+
 
 const Page = () => {
   const [categories, setCategories] = useState([]);
@@ -20,6 +22,7 @@ const Page = () => {
       try {
         const { data } = await axios.get("/api/admin/storeCategory");
         setCategories(data);
+        // toast.success("Categories fetched successfully!");
       } catch (error) {
         setError("Failed to fetch categories");
         console.error("Error fetching categories:", error);
@@ -31,7 +34,9 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white shadow-xl rounded-2xl mt-10">
+    // <div className="max-w-6xl mx-auto p-6 bg-white shadow-xl rounded-2xl mt-10">
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-300 to-purple-600 p-6">
+
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
       Shop By Category
       </h1>

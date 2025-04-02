@@ -47,68 +47,6 @@ export async function POST(req) {
 
   
 
-// import { prisma } from "@/lib/prisma";
-// import { NextResponse } from "next/server";
-
-// // Add to wishlist
-// export async function POST(req) {
-//     try {
-//         const body = await req.json();
-//         console.log("Received Data=", body);
-
-//         const { userId, productId } = body;
-
-//         console.log("UserId=", userId);
-//         console.log("ProductId=", productId);
-
-//         // Check for missing fields
-//         if (!userId || !productId) {
-//             return NextResponse.json({ message: "Missing fields" }, { status: 400 });
-//         }
-
-//         const userExists = await prisma.user.findUnique({
-//             where: { id: userId },
-//         });
-
-//         if (!userExists) {
-//             return NextResponse.json({ message: "User not found" }, { status: 404 });
-//         }
-
-//         const productExists = await prisma.product.findUnique({
-//             where: { id: productId },
-//         });
-
-//         if (!productExists) {
-//             return NextResponse.json({ message: "Product not found" }, { status: 404 });
-//         }
-
-//         // Check if the item is already in the wishlist
-//         const existingWishlistItem = await prisma.wishlist.findFirst({
-//             where: {
-//                 userId,
-//                 productId,
-//             },
-//         });
-
-//         if (existingWishlistItem) {
-//             return NextResponse.json({ message: "Product already in wishlist" }, { status: 400 });
-//         }
-
-//         // Create new wishlist item
-//         const newWishlistItem = await prisma.wishlist.create({
-//             data: {
-//                 userId,
-//                 productId,
-//             },
-//         });
-
-//         console.log("New Wishlist Item:", newWishlistItem);
-//         return NextResponse.json(newWishlistItem);
-//     } catch (error) {
-//         console.error("Error adding to wishlist:", error);
-//         return NextResponse.json({ message: "Error adding to wishlist", error }, { status: 500 });
-//     }
-// }
 
     // Remove from wishlist
 export async function DELETE(req) {

@@ -16,14 +16,13 @@ export default function Navbar() {
   const [cartCount, setCartCount] = useState(0);
  
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return; 
   
     const fetchCartCount = async () => {
       try {
         const { data } = await axios.get(`/api/cart/cart-count`, {
           params: { userId: user.id },
         });
-  
         setCartCount(data.count || 0);
       } catch (error) {
         console.error("Error fetching cart count:", error);
@@ -38,7 +37,7 @@ export default function Navbar() {
     return () => {
       window.removeEventListener("cartUpdated", updateCartCount);
     };
-  }, [user?.id]);
+  }, [user]); // Only trigger when user updates
   
   
 
@@ -92,13 +91,20 @@ export default function Navbar() {
               </button>
 
               {showDropdown && (
+
+
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
                   {user.role === "USER" && (
                     <Link href="/order/my-order" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">
                       My Orders
                     </Link>
                   )}
+                  {user.role === "USER" && (
 
+                     <Link href="/users/my-wishlist" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">
+                    My wishlist
+                     </Link>
+                  )}
                   <Link href="/user-profile" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">
                     My Profile
                   </Link>
@@ -110,6 +116,11 @@ export default function Navbar() {
               )}
             </div>
           )}
+
+
+
+
+
 
           {!user && (
             <Link href="/sign-in" className="bg-blue-500 text-white px-4 py-2 rounded-lg">

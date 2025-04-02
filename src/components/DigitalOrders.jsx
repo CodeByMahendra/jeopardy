@@ -1,15 +1,11 @@
 
 
-
-
-
-
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const DigitalOrders = () => {
   const { data: session } = useSession();
@@ -17,8 +13,13 @@ const DigitalOrders = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(null);
 
+
+ 
+
   useEffect(() => {
     if (!session?.user?.id) return;
+
+  
 
     const fetchDigitalOrders = async () => {
       try {
@@ -51,10 +52,10 @@ const DigitalOrders = () => {
        orderId,
       });
 
-      alert(data.message || "Email Sent!");
+      toast.success(data.message || "Email Sent!");
     } catch (error) {
       console.error("Error sending download email:", error);
-      alert("Failed to send email");
+      toast.error("Failed to send email");
     } finally {
       setSending(null);
     }
@@ -90,6 +91,7 @@ const DigitalOrders = () => {
           ))}
         </ul>
       )}
+
     </div>
   );
 };

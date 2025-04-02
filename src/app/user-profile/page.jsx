@@ -1,12 +1,10 @@
 
-
-
-
 "use client";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import MembershipUpdateForm from "@/components/Membership";
+import axios from "axios"; // ✅ Import Axios
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -22,10 +20,7 @@ export default function ProfilePage() {
       }
 
       try {
-        const res = await fetch(`/api/user/${session.user.id}`);
-        if (!res.ok) throw new Error("Failed to fetch user data");
-
-        const data = await res.json();
+        const { data } = await axios.get(`/api/user/${session.user.id}`); // ✅ Using Axios
         setUser(data.user);
       } catch (error) {
         console.error("Error fetching user profile:", error);

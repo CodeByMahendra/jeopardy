@@ -33,6 +33,7 @@ export default function BlogPage({ params }) {
 
   return (
     <div className="max-w-4xl mx-auto p-5">
+
       <h1 className="text-2xl font-bold mb-5">Blogs</h1>
       {blogs.length === 0 ? (
         <p>No blogs found for this category</p>
