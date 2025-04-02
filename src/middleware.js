@@ -80,7 +80,7 @@ export default withAuth(
     const token = req.nextauth?.token;
     const { pathname } = req.nextUrl;
 
-    console.log("Middleware Token:", token); // Debugging token values
+    console.log("Middleware Token:", token); 
 
     if (!token) {
       return NextResponse.redirect(new URL("/sign-in", req.url));
