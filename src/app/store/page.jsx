@@ -5,6 +5,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -16,9 +18,14 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
+    const { data: session, status } = useSession();
+  
 
   useEffect(() => {
     const fetchCategories = async () => {
+
+
+
       try {
         const { data } = await axios.get("/api/admin/storeCategory");
         setCategories(data);
