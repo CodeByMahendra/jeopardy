@@ -81,7 +81,9 @@ export default function ContactUs() {
           </div>
 
           <div>
-            <ReCAPTCHA sitekey="6LcU3PYqAAAAANbIvuohAW1zGIiUKrgsuD31rHcM" onChange={(token) => setCaptchaValue(token)} />
+          <ReCAPTCHA sitekey="6LcU3PYqAAAAANbIvuohAW1zGIiUKrgsuD31rHcM" onChange={(token) => setCaptchaValue(token)} />
+
+        
           </div>
 
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Submit</button>
