@@ -53,7 +53,7 @@ async function onSubmit(values) {
       if (response.data.user.role === "ADMIN") {
         router.push("/admin");
       } else {
-        router.push("/users/game");
+        router.push("/game");
       }
     }
   } catch (error) {
