@@ -71,13 +71,24 @@
 //   // "/users/:path*"],
 // };
 
+
+
+
+
+
+
+
+
+
+
+
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(req) {
     const { pathname } = req.nextUrl;
-    const token = req.nextauth?.token; // May be undefined in Edge runtime
+    const token = req.nextauth?.token; 
 
     console.log("Middleware Token:", token); 
 
@@ -85,7 +96,6 @@ export default withAuth(
       return NextResponse.redirect(new URL("/sign-in", req.url));
     }
 
-    // Debugging - Check if the token exists
     console.log("User Role:", token?.role); 
 
     if (token?.role === "USER" && pathname.startsWith("/admin")) {
@@ -93,7 +103,8 @@ export default withAuth(
     }
 
     if (token?.role === "ADMIN" && pathname.startsWith("/admin")) {
-      console.log("Admin accessing admin route ✅");
+      return NextResponse.redirect(new URL("/admin", req.url));
+      
     }
 
     return NextResponse.next();
@@ -102,7 +113,7 @@ export default withAuth(
     callbacks: {
       authorized: ({ token }) => {
         console.log("Authorized Token in Middleware:", token);
-        return !!token; // Ensure token exists
+        return !!token; 
       },
     },
   }
