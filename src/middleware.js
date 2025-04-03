@@ -103,8 +103,8 @@ export default withAuth(
     }
 
     if (token?.role === "ADMIN" && pathname.startsWith("/admin")) {
-      return NextResponse.redirect(new URL("/admin", req.url));
-      
+
+      console.log("Admin Access Granted",pathname);
     }
 
     return NextResponse.next();

@@ -35,7 +35,7 @@ export default function AdminDashboard() {
                 console.log("Decoded Token:", decoded);
 
                 if (!decoded || decoded.role !== "ADMIN") {
-                    router.push("/game"); // Non-admin users are redirected
+                    router.push("/game"); 
                     return;
                 }
             } catch (error) {
