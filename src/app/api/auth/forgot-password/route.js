@@ -19,7 +19,7 @@ export async function POST(req) {
     }
 
     const resetToken = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "25m" });
-    const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const resetLink = `https://jeopardy-8f1w.vercel.app/reset-password?token=${resetToken}`;
 
     let transporter = nodemailer.createTransport({
       service: "gmail",

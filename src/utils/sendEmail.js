@@ -8,7 +8,7 @@ export async function sendDigitalDownloadEmail(email, productName, fileUrl) {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      secure: false,  // ✅ Secure ko false rakho
+      secure: false,  
       tls: {
         rejectUnauthorized: false,  // ✅ SSL Certificate Errors Ignore karne ke liye
       },
