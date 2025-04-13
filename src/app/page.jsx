@@ -7,7 +7,7 @@ import React from "react";
 export default function Home() {
   const router = useRouter()
   const handleStartGame = () => {
-    router.push("/users/game"); 
+    router.push("/sign-up"); 
   };
 
   
@@ -19,7 +19,7 @@ export default function Home() {
       </p>
       
       <button onClick={handleStartGame} className="px-6 py-3 bg-yellow-400 text-black font-semibold text-xl rounded-lg shadow-lg hover:bg-yellow-500 transition-all">
-        Start Game
+        Sign-up to play game
       </button>
       
       <div className="mt-10 bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-2xl">
