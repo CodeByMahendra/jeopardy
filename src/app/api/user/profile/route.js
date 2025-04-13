@@ -19,7 +19,9 @@ export async function GET(req, { params }) {
                         status: true,
                         createdAt: true
                     }
-                }
+                },
+                addresses: true // 👈 include addresses
+
             }
         });
 

@@ -3,7 +3,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession,signOut } from "next-auth/react";
+
 import axios from "axios";
 
 export default function QuizGame() {
@@ -15,33 +16,33 @@ export default function QuizGame() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
+
+
+
   useEffect(() => {
     const initializeGame = async () => {
       if (status === "loading") return;
-      if (!session || !session.user || !session.user.id) {
-        console.error("User ID is missing");
+      if (!session || !session.user || !session.accessToken) {
+        console.log("🔴 No valid session or token. Logging out...");
         router.push("/sign-in");
         return;
       }
-
+  
       const userId = session.user.id;
       const token = session.accessToken;
-      if (!token) {
-        console.error("No authentication token available");
-        return;
-      }
-
+      console.log("token hai ===", token);
+  
       try {
         setLoading(true);
         const [questionRes, scoreRes, attemptRes] = await Promise.all([
-          axios.get("/api/questions", { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get("/api/questions"),
           axios.get(`/api/game/get-score?userId=${userId}`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get("/api/game/get-attempts", { headers: { Authorization: `Bearer ${token}` } }),
         ]);
-
+  
         setQuestions(questionRes.data);
         setScore(scoreRes.data?.score || 0);
-
+  
         const attemptMap = {};
         if (attemptRes.data && Array.isArray(attemptRes.data.attempts)) {
           attemptRes.data.attempts.forEach(({ questionId, isCorrect }) => {
@@ -55,9 +56,12 @@ export default function QuizGame() {
         setLoading(false);
       }
     };
-
+  
     initializeGame();
   }, [session, status, router]);
+  
+
+
 
   const handleQuestionClick = (question) => {
     if (!attemptedQuestions[question.id]) {

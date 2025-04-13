@@ -23,7 +23,7 @@ model User {
   resetTokenExpiry DateTime?
   membershipExpiry DateTime?  
   orderItems       OrderItem[]
-
+  addresses        Address[]
   accounts         Account[]
   attempts         Attempt[]
   cart             Cart?
@@ -60,6 +60,18 @@ model Order {
 }
 
 
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  street    String
+  city      String
+  state     String
+  zip       String
+  country   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
 
 
 

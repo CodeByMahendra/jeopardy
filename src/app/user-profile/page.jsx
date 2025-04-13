@@ -5,11 +5,14 @@ import { useSession } from "next-auth/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import MembershipUpdateForm from "@/components/Membership";
 import axios from "axios"; // ✅ Import Axios
+import AddressForm from "@/components/UserAddress";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
+
+  const userId = session?.user?.id; // Get the user ID from the session
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -50,6 +53,12 @@ export default function ProfilePage() {
             Membership: <span className="text-blue-600">{user?.membership || "None"}</span>
           </p>
         </div>
+      </div>
+
+      <div className="mt-6">
+
+        <h3 className="text-2xl font-bold mb-4">Your Addresses</h3>
+        <AddressForm userId={userId} />
       </div>
 
       <div className="mt-6">

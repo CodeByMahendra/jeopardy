@@ -161,7 +161,18 @@ export default function StorePage({ params }) {
                 <h2 className="text-xl font-semibold mt-3">{product.name}</h2>
                 <p className="text-gray-500 mt-1 line-clamp-2">{product.description}</p>
                 <div className="flex justify-between items-center mt-4">
-                  <p className="text-lg font-bold text-green-600">${product.price}</p>
+                  {/* <p className="text-lg font-bold text-green-600">${product.price}</p> */}
+                  <div className="mt-2">
+  {product.basePrice !== product.price ? (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-gray-500 line-through">${product.basePrice}</span>
+      <span className="text-lg font-bold text-green-600">${product.price}</span>
+    </div>
+  ) : (
+    <span className="text-lg font-bold text-green-600">${product.basePrice}</span>
+  )}
+</div>
+
                 </div>
                 <button onClick={() => toggleCart(product)} className={`w-full py-2 mt-2 rounded text-white ${inCart ? 'bg-red-500' : 'bg-blue-500'}`}>
                   {inCart ? "Remove from Cart" : "Add to Cart"}

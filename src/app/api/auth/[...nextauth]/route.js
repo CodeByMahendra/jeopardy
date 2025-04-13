@@ -178,6 +178,10 @@ export { handler as GET, handler as POST };
 
 
 
+
+
+
+
 // const NextAuth = require("next-auth").default;
 // const CredentialsProvider = require("next-auth/providers/credentials").default;
 // const GoogleProvider = require("next-auth/providers/google").default;
@@ -300,4 +304,143 @@ export { handler as GET, handler as POST };
 
 // const handler = NextAuth(authOptions);
 
+// export { handler as GET, handler as POST };
+
+
+
+
+
+
+
+
+
+
+// const NextAuth = require("next-auth").default;
+// const CredentialsProvider = require("next-auth/providers/credentials").default;
+// const GoogleProvider = require("next-auth/providers/google").default;
+
+// import { prisma } from "@/lib/prisma";
+// import bcrypt from "bcrypt";
+// import jwt from "jsonwebtoken";
+
+// const authOptions = {
+//   providers: [
+//     CredentialsProvider({
+//       name: "Credentials",
+//       credentials: {
+//         email: { label: "Email", type: "email" },
+//         password: { label: "Password", type: "password" },
+//         rememberMe: { label: "Remember Me", type: "checkbox" },
+//       },
+//       async authorize(credentials) {
+//         const { email, password, rememberMe } = credentials;
+
+//         if (!email || !password) {
+//           throw new Error("Email and Password are required!");
+//         }
+
+//         const user = await prisma.user.findUnique({
+//           where: { email },
+//         });
+
+//         if (!user) {
+//           throw new Error("No user found with this email!");
+//         }
+
+//         const isPasswordValid = await bcrypt.compare(password, user.password);
+//         if (!isPasswordValid) {
+//           throw new Error("Invalid password!");
+//         }
+
+//         return {
+//           id: user.id,
+//           name: user.name,
+//           email: user.email,
+//           role: user.role,
+//           rememberMe: rememberMe === "true", // Pass to jwt
+//         };
+//       },
+//     }),
+
+//     GoogleProvider({
+//       clientId: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//     }),
+//   ],
+
+//   pages: {
+//     signIn: "/sign-in",
+//   },
+
+//   callbacks: {
+//     async signIn({ user, account }) {
+//       if (account.provider === "google") {
+//         let existingUser = await prisma.user.findUnique({
+//           where: { email: user.email },
+//         });
+
+//         if (!existingUser) {
+//           existingUser = await prisma.user.create({
+//             data: {
+//               name: user.name,
+//               email: user.email,
+//             },
+//           });
+//         }
+
+//         user.id = existingUser.id;
+//       }
+
+//       return true;
+//     },
+
+//     async jwt({ token, user }) {
+//       if (user) {
+//         token.id = user.id;
+//         token.role = user.role || "USER";
+//         token.rememberMe = user.rememberMe;
+
+//         // ⏳ Set expiration dynamically
+//         const expiresInSec = user.rememberMe ? 30 * 24 * 60 * 60 : 60;
+
+//         token.accessToken = jwt.sign(
+//           { id: user.id, email: user.email, role: user.role },
+//           process.env.JWT_SECRET,
+//           { expiresIn: expiresInSec }
+//         );
+
+//         // Add expiration timestamp manually
+//         token.exp = Math.floor(Date.now() / 1000) + expiresInSec;
+//       }
+//       return token;
+//     },
+
+//     async session({ session, token }) {
+//       if (token) {
+//         const dbUser = await prisma.user.findUnique({
+//           where: { id: token.id },
+//           select: { id: true, name: true, email: true, role: true, membership: true },
+//         });
+
+//         if (dbUser) {
+//           session.user.id = dbUser.id;
+//           session.user.role = dbUser.role || "USER";
+//           session.user.membership = dbUser.membership || "NONE";
+//           session.accessToken = token.accessToken;
+//           session.expiresAt = token.exp * 1000; // For client-side logout timer
+//         }
+//       }
+//       return session;
+//     },
+//   },
+
+//   secret: process.env.NEXTAUTH_SECRET,
+
+//   session: {
+//     strategy: "jwt",
+//     maxAge: 30 * 24 * 60 * 60,
+//   },
+// };
+
+// const handler = NextAuth(authOptions);
 // export { handler as GET, handler as POST };
